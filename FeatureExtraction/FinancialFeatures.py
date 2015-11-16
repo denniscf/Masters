@@ -1,6 +1,7 @@
 __author__ = 'dennis'
 import numpy as np
 import math as m
+import matplotlib.pyplot as plt
 
 def MovingAverage(series, nDays):
     nElems = len(series)
@@ -39,9 +40,8 @@ def WilderSMMA(series, nDays=14):
         smooth = pow((1-smoothingFactor), nDays - i - 1)
         smoothingFactors[i] = smooth
         firstExpDecaySum += smooth*series[i]
-    firstExpDecaySum = smoothingFactor*firstExpDecaySum
+    ema[startRange] = smoothingFactor*firstExpDecaySum
 
-    ema[startRange] = firstExpDecaySum
     for i in xrange(nDays, nElems):
         ema[i] = smoothingFactor*series[i] + ema[i-1]*(1-smoothingFactor)
 
@@ -58,7 +58,6 @@ def StochasticPctK(closeSeries, highSeries, lowSeries, nDays=3):
         pctK[i] = (closeSeries[i] - lowestLow)/(highestHigh - lowestLow) * 100
 
     return pctK
-
 
 #In technical analysis, this is a momentum indicator measuring overbought and oversold levels, similar to a stochastic oscillator.
 #It was developed by Larry Williams and compares a stock's close to the high-low range over a certain period of time, usually 14 days.
@@ -90,16 +89,8 @@ def BollingerBands(series, nDays=3, K=2):
     return bbUpper, bbLower
 
 #Moving Average on K
-def StochasticPctD(K=[], n=3):
-    if not K:
-        K = StochasticPctK()
+def StochasticPctD(K, n=3):
     return MovingAverage(series=K, nDays=n)
-
-def StochasticSlowPctD(D=[], n=3):
-    if not D:
-        D = StochasticPctD(n=n)
-
-    return MovingAverage(series=D, nDays=n)
 
 def Momentum(closeSeries, idx, delay=4):
     if idx < delay:
@@ -137,11 +128,11 @@ def PriceOscillator(priceSeries, nMAFast=5, nMASlow=10):
     for i in range(startRangeSlow, nElems):
         valMASlow = np.mean(priceSeries[i-startRangeSlow:i+1])
         valMAFast = np.mean(priceSeries[i-startRangeFast:i+1])
-        priceOscillator[i] = (valMAFast - valMASlow)/valMAFast
+        priceOscillator[i] = 100*(valMAFast - valMASlow)/valMAFast
 
     return priceOscillator
 
-def RelativeStrengthIndex(priceSeries, nDays=14):
+def RelativeStrengthIndex( priceSeries, nDays=14):
     nElems = len(priceSeries)
     rsi = np.zeros([nElems])
     rs = np.zeros([nElems])

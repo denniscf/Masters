@@ -83,7 +83,7 @@ class FinancialFeaturesTest(unittest.TestCase):
     def testPriceOscillator(self):
         close = np.array([1, 2, 1.5, 2.5, 3, -1, 1, 4, 3, 5, 1])
         priceOscillation = ff.PriceOscillator(close, nMAFast=3, nMASlow=5)
-        priceOscillationExpected = np.array([0, 0, 0, 0, 0.14285714, -0.06666667, -0.4, -0.425, 0.25, 0.4, 0.06666667])
+        priceOscillationExpected = np.array([0, 0, 0, 0, 14.285714, -6.666667, -40, -42.5, 25, 40, 6.666667])
         self.failUnless(np.allclose(priceOscillation, priceOscillationExpected))
 
         fig = plt.figure()
@@ -122,6 +122,21 @@ class FinancialFeaturesTest(unittest.TestCase):
 
         fig = plt.figure(1)
         plt.title('Exponential Moving Average')
+        ax = fig.add_subplot(111)
+        ax.plot(close, color='k')
+        ax.plot(ema, color='g')
+        plt.show()
+
+    # Tested - Ok
+    def testWilderSMMA(self):
+        close = np.array(
+            [44.34, 44.09, 44.15, 43.61, 44.33, 44.83, 45.10, 45.42, 45.84, 46.08, 45.89, 46.03, 45.61, 46.28, 46.28,
+             46.00, 46.03, 46.41, 46.22, 45.64, 46.21, 46.25, 45.71, 46.45, 45.78, 45.35, 44.03, 44.18, 44.22, 44.57,
+             43.42, 42.66, 43.13])
+        ema = ff.WilderSMMA(close, nDays=14)
+
+        fig = plt.figure(1)
+        plt.title('Wilder SMMA')
         ax = fig.add_subplot(111)
         ax.plot(close, color='k')
         ax.plot(ema, color='g')

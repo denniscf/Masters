@@ -1,5 +1,6 @@
 __author__ = 'dennis'
 import numpy as np
+import copy
 import math as m
 import matplotlib.pyplot as plt
 
@@ -92,11 +93,11 @@ def BollingerBands(series, nDays=3, K=2):
 def StochasticPctD(K, n=3):
     return MovingAverage(series=K, nDays=n)
 
-def Momentum(closeSeries, idx, delay=4):
-    if idx < delay:
-        return closeSeries[idx] - closeSeries[0]
-
-    return closeSeries[idx] - closeSeries[delay]
+def Momentum(closeSeries, delay=4):
+    momentum = copy.copy(closeSeries)
+    momentum[delay:] = momentum[delay:] - momentum[0:-delay]
+    momentum[0:delay] = -999
+    return momentum
 
 def PriceRateOfChange(closeSeries):
     nElems = len(closeSeries)

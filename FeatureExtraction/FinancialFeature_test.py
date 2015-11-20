@@ -142,6 +142,11 @@ class FinancialFeaturesTest(unittest.TestCase):
         ax.plot(ema, color='g')
         plt.show()
 
+    def testMomentum(self):
+        closeSeries = np.array([0, 1, 2, 3, 4, 2, 3.0, 1, 5.5, 6])
+        expectedMomentum = np.array([-999, -999, -999, -999, 4, 1, 1, -2, 1.5, 4])
+        momentum = ff.Momentum(closeSeries, delay=4)
+        self.failUnless(np.allclose(momentum, expectedMomentum))
 
 if __name__ == '__main__':
     unittest.main()
